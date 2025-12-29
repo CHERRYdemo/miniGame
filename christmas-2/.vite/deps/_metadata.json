@@ -1,0 +1,83 @@
+{
+  "hash": "b0e4cfab",
+  "browserHash": "30048966",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "6891e40d",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "3c4714a0",
+      "needsInterop": true
+    },
+    "@react-three/fiber": {
+      "src": "../../node_modules/@react-three/fiber/dist/react-three-fiber.esm.js",
+      "file": "@react-three_fiber.js",
+      "fileHash": "f2f53929",
+      "needsInterop": false
+    },
+    "@react-three/drei": {
+      "src": "../../node_modules/@react-three/drei/index.js",
+      "file": "@react-three_drei.js",
+      "fileHash": "96ec5183",
+      "needsInterop": false
+    },
+    "@react-three/postprocessing": {
+      "src": "../../node_modules/@react-three/postprocessing/dist/index.js",
+      "file": "@react-three_postprocessing.js",
+      "fileHash": "7e1c01c8",
+      "needsInterop": false
+    },
+    "postprocessing": {
+      "src": "../../node_modules/postprocessing/build/index.js",
+      "file": "postprocessing.js",
+      "fileHash": "b74d5e10",
+      "needsInterop": false
+    },
+    "@mediapipe/tasks-vision": {
+      "src": "../../node_modules/@mediapipe/tasks-vision/vision_bundle.mjs",
+      "file": "@mediapipe_tasks-vision.js",
+      "fileHash": "59d13e17",
+      "needsInterop": false
+    },
+    "three": {
+      "src": "../../node_modules/three/build/three.module.js",
+      "file": "three.js",
+      "fileHash": "02f1c3ae",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "hls-44ZXUWIC": {
+      "file": "hls-44ZXUWIC.js"
+    },
+    "vision_bundle-WKONUD7N": {
+      "file": "vision_bundle-WKONUD7N.js"
+    },
+    "chunk-6XIAPA35": {
+      "file": "chunk-6XIAPA35.js"
+    },
+    "chunk-2S5H75TR": {
+      "file": "chunk-2S5H75TR.js"
+    },
+    "chunk-RBHKMPD6": {
+      "file": "chunk-RBHKMPD6.js"
+    },
+    "chunk-G27D5NRZ": {
+      "file": "chunk-G27D5NRZ.js"
+    },
+    "chunk-754G4D4E": {
+      "file": "chunk-754G4D4E.js"
+    },
+    "chunk-TCVL7DEF": {
+      "file": "chunk-TCVL7DEF.js"
+    },
+    "chunk-ZC22LKFR": {
+      "file": "chunk-ZC22LKFR.js"
+    }
+  }
+}
