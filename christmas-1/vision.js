@@ -351,11 +351,12 @@ export async function initVision() {
         await startCamera(); // 默认启动前置
         
         console.log("Vision Init Complete");
-        document.getElementById('loading').style.display = 'none';
+        // document.getElementById('loading').style.display = 'none'; // 移交控制权给 main.js
 
     } catch (e) {
         console.error("Vision Init Error:", e);
-        document.getElementById('loading').innerText = "加载失败：" + e.message;
+        // document.getElementById('loading').innerText = "加载失败：" + e.message;
+        throw e; // 抛出错误供 main.js 捕获
     }
 }
 

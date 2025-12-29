@@ -1,5 +1,6 @@
 import { initVision, setZoomLevel } from './vision.js';
 import { state } from './state.js';
+import { preloadParticleResources } from './particleTree.js';
 // import { initLuxuryTree } from './luxuryTree.js'; // 暂时不需要直接导入，由 particleTree 动态调用或全局调用
 
 // 调试信息：确认页面加载
@@ -138,5 +139,45 @@ if (canvas) {
 
 // --- 启动程序 ---
 
-// 正常启动 Vision，等待摄像头加载完成后会自动隐藏 Loading
-initVision();
+async function startApp() {
+    try {
+        const loadingText = document.querySelector('#loading p');
+        
+        // 1. 启动资源预加载
+        console.log("Starting resource preload...");
+        const resourcePromise = preloadParticleResources();
+        
+        // 2. 启动 Vision
+        console.log("Starting vision init...");
+        if(loadingText) loadingText.innerText = "正在初始化视觉模型和加载资源...";
+        const visionPromise = initVision();
+
+        // 3. 等待所有任务完成
+        await Promise.all([visionPromise, resourcePromise]);
+
+        console.log("All systems ready!");
+        if(loadingText) loadingText.innerText = "准备进入魔法世界...";
+        
+        // 4. 隐藏 Loading 界面
+        // 稍微等待一下，确保渲染帧已经准备好
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loading');
+            if (loadingScreen) {
+                loadingScreen.style.opacity = '0';
+                loadingScreen.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }
+        }, 800);
+
+    } catch (e) {
+        console.error("启动失败:", e);
+        const loadingDiv = document.getElementById('loading');
+        if(loadingDiv) {
+            loadingDiv.innerHTML = `<p style="color: red">启动失败: ${e.message}</p><p>请检查摄像头权限或网络连接</p>`;
+        }
+    }
+}
+
+startApp();

@@ -1,11 +1,45 @@
 
 import React, { useState, Suspense, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Loader } from '@react-three/drei';
+import { useProgress } from '@react-three/drei';
 import { Experience } from './components/Experience';
 import { UIOverlay } from './components/UIOverlay';
 import { GestureController } from './components/GestureController';
 import { TreeMode } from './types';
+
+// Custom Loading Screen that combines 3D loading and Gesture initialization
+function LoadingScreen({ isGestureReady }: { isGestureReady: boolean }) {
+  const { progress, active } = useProgress();
+  // Wait until 3D is loaded AND gesture is ready
+  const is3DLoaded = !active && progress === 100;
+  const isReady = is3DLoaded && isGestureReady;
+  
+  const [visible, setVisible] = useState(true);
+  
+  useEffect(() => {
+    if (isReady) {
+      const timer = setTimeout(() => setVisible(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [isReady]);
+
+  if (!visible) return null;
+
+  return (
+    <div className={`absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black text-[#D4AF37] font-serif transition-opacity duration-800 ${isReady ? 'opacity-0' : 'opacity-100'}`}>
+      <div className="mb-6 text-2xl animate-pulse">Merry Christmas</div>
+      <div className="w-[300px] h-[2px] bg-[#333] mb-4 rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-[#D4AF37] transition-all duration-300 ease-out shadow-[0_0_10px_#D4AF37]" 
+          style={{ width: `${Math.max(5, is3DLoaded ? (isGestureReady ? 100 : 90) : progress)}%` }}
+        />
+      </div>
+      <div className="text-xs tracking-[0.2em] uppercase opacity-80">
+        {active ? "Loading Magic World..." : (isGestureReady ? "Enter" : "Initializing Vision...")}
+      </div>
+    </div>
+  );
+}
 
 // Simple Error Boundary to catch 3D resource loading errors (like textures)
 class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
@@ -48,6 +82,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 export default function App() {
   const [mode, setMode] = useState<TreeMode>(TreeMode.FORMED);
   const [handPosition, setHandPosition] = useState<{ x: number; y: number; detected: boolean }>({ x: 0.5, y: 0.5, detected: false });
+  const [isGestureReady, setIsGestureReady] = useState(false); // 新增：手势准备状态
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([
     './photos/f65067a321a6178a51c9b37a4888154f.JPG',
     './photos/IMG_6275.JPG',
@@ -139,12 +174,8 @@ export default function App() {
         </Canvas>
       </ErrorBoundary>
       
-      <Loader 
-        containerStyles={{ background: '#000' }} 
-        innerStyles={{ width: '300px', height: '10px', background: '#333' }}
-        barStyles={{ background: '#D4AF37', height: '10px' }}
-        dataStyles={{ color: '#D4AF37', fontFamily: 'Cinzel' }}
-      />
+      {/* Unified Loading Screen */}
+      <LoadingScreen isGestureReady={isGestureReady} />
       
       <UIOverlay 
         mode={mode} 
@@ -165,7 +196,13 @@ export default function App() {
       )}
       
       {/* Gesture Control Module */}
-      <GestureController currentMode={mode} onModeChange={setMode} onHandPosition={handleHandPosition} onTwoHandsDetected={handleTwoHandsDetected} />
+      <GestureController 
+        currentMode={mode} 
+        onModeChange={setMode} 
+        onHandPosition={handleHandPosition} 
+        onTwoHandsDetected={handleTwoHandsDetected}
+        onReady={() => setIsGestureReady(true)}
+      />
       
       {/* Photo Overlay - Shows when two hands detected */}
       {closestPhoto && (

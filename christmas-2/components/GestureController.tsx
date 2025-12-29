@@ -16,13 +16,15 @@ interface GestureControllerProps {
   currentMode: TreeMode;
   onHandPosition?: (x: number, y: number, detected: boolean) => void;
   onTwoHandsDetected?: (detected: boolean) => void;
+  onReady?: () => void;
 }
 
 export const GestureController: React.FC<GestureControllerProps> = ({ 
   onModeChange, 
   currentMode, 
   onHandPosition, 
-  onTwoHandsDetected 
+  onTwoHandsDetected,
+  onReady
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -310,6 +312,8 @@ export const GestureController: React.FC<GestureControllerProps> = ({
   // 处理视频循环
   useEffect(() => {
     if (isLoaded && handsRef.current && videoRef.current && videoRef.current.videoWidth > 0) {
+      if (onReady) onReady();
+      
       const processVideo = async () => {
         if (handsRef.current && videoRef.current && videoRef.current.videoWidth > 0) {
           try {
