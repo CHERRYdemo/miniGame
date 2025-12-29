@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./christmas-2
-        run: npm ci
+        run: npm install
 
       - name: Build christmas-2
         working-directory: ./christmas-2
