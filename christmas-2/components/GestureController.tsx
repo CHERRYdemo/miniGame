@@ -402,7 +402,7 @@ export const GestureController: React.FC<GestureControllerProps> = ({
 
       {/* Refresh/Back Button */}
       <button
-        onClick={() => window.location.href = '../../christmas-1/index.html'}
+        onClick={() => window.location.href = '../christmas-1/index.html'}
         className="p-3 border-2 border-[#D4AF37] bg-black/70 backdrop-blur-md rounded-full text-[#D4AF37] hover:bg-[#D4AF37]/30 hover:text-[#F5E6BF] hover:shadow-[0_0_20px_#D4AF37] transition-all duration-300 pointer-events-auto flex items-center justify-center w-14 h-14 group shadow-lg"
         title="重新开始"
       >

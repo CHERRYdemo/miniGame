@@ -212,8 +212,8 @@ export const UIOverlay: React.FC<UIOverlayProps> = ({ mode, onToggle, onPhotosUp
   };
 
   const handleCreateMine = () => {
-    // 清除 URL 参数，刷新页面
-    window.location.href = window.location.origin;
+    // 清除 URL 参数，刷新当前页面
+    window.location.href = window.location.pathname;
   };
 
   return (
