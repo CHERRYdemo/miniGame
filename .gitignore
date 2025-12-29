@@ -1,0 +1,46 @@
+# 依赖
+node_modules/
+python/
+
+# 构建输出
+christmas-2/dist/
+*.log
+server.log
+
+# 环境变量
+.env
+.env.local
+.env*.local
+
+# 系统文件
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# 编辑器
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# 临时文件
+*.tmp
+*.temp
+
+# Windows 批处理文件（可选，如果需要保留可以删除这行）
+# *.bat
+
+# macOS
+.DS_Store
+
+# 日志文件
+*.log
+server.log
+
+# Vercel
+.vercel
+

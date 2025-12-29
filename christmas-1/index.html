@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Hand Interaction</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- MediaPipe Libraries -->
+    <script src="https://unpkg.com/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+</head>
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>正在加载魔法世界...</p>
+    </div>
+
+    <div id="info" style="display: none;">
+        <h3>玩法说明</h3>
+        <p>1. <b>堆圣诞树</b>：做"O"型嘴吐泡泡，泡泡会累积成树。</p>
+        <p>2. <b>变身</b>：堆完后，做 ✊握拳 -> ✋张开 手势，泡泡炸开变成粒子圣诞树。</p>
+    </div>
+
+    <!-- 许愿输入框区域 -->
+    <div id="wish-container" style="display: none;">
+        <input type="text" id="wish-input" placeholder="输入你的愿望..." maxlength="20">
+        <button id="wish-btn">🎆</button>
+    </div>
+
+    <div id="controls">
+        <button id="tree-btn" class="control-btn">🎄开始</button>
+        <button id="spoon-btn" class="control-btn" style="margin-top: 10px;">💡开始</button>
+    </div>
+
+    <div id="video-container">
+        <video id="input-video"></video>
+        <canvas id="underwater-canvas"></canvas>
+    </div>
+    
+    <!-- 3D Scene Canvas -->
+    <canvas id="three-canvas"></canvas>
+
+    <script type="module" src="main.js?v=27"></script>
+</body>
+</html>

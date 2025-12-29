@@ -1,0 +1,85 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: christmas-2/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./christmas-2
+        run: npm ci
+
+      - name: Build christmas-2
+        working-directory: ./christmas-2
+        run: npm run build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || '' }}
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deploy
+          
+          # 复制根目录入口文件
+          cp index.html deploy/ || true
+          
+          # 复制 christmas-1（完整目录，排除不需要的文件）
+          cp -r christmas-1 deploy/
+          find deploy/christmas-1 -name "*.py" -delete || true
+          find deploy/christmas-1 -name "*.log" -delete || true
+          find deploy/christmas-1 -name "*.bat" -delete || true
+          find deploy/christmas-1 -name "*.sh" -delete || true
+          
+          # 复制 christmas-2 构建结果到 christmas-2 目录
+          # 将 dist 内容作为 christmas-2 的部署内容
+          mkdir -p deploy/christmas-2
+          cp -r christmas-2/dist/* deploy/christmas-2/ || true
+          
+          # 确保 public 目录的资源也被复制
+          if [ -d "christmas-2/public" ]; then
+            cp -r christmas-2/public/* deploy/christmas-2/ || true
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

@@ -1,0 +1,179 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #000;
+    font-family: 'Arial', sans-serif;
+}
+
+#video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#input-video {
+    display: none;
+}
+
+#underwater-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}
+
+#three-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: none; /* Initial hidden */
+    opacity: 0;
+    pointer-events: none; 
+}
+
+#info {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 10;
+    pointer-events: none;
+    max-width: 300px;
+}
+
+#info h3 {
+    margin-top: 0;
+    color: #FFD700;
+}
+
+#controls {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 10;
+}
+
+.control-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+/* Wish Input Styles */
+#wish-container {
+    position: fixed;
+    bottom: 10%; 
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+    transition: all 0.5s ease;
+}
+
+#wish-input {
+    background: rgba(255, 215, 0, 0.3); 
+    border: 2px solid #FFD700;
+    border-radius: 25px;
+    padding: 10px 20px;
+    color: #FFF;
+    font-size: 18px;
+    width: 250px;
+    outline: none;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+#wish-input::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+#wish-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s;
+    padding: 0 10px;
+}
+
+#wish-btn:hover {
+    transform: scale(1.2);
+}
+
+/* Animation Classes */
+.folding {
+    animation: foldInput 1s forwards;
+}
+
+@keyframes foldInput {
+    0% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(-50%) scale(0.1, 1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(-50%) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Loading Screen */
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #FFD700;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    font-size: 20px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50%;
+    border-top-color: #FFD700;
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
