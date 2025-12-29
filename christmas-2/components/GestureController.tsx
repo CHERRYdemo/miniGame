@@ -191,9 +191,17 @@ export const GestureController: React.FC<GestureControllerProps> = ({
     setShowCameraButton(false);
     
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 320, height: 240, facingMode: "user" }
-      });
+      let stream;
+      try {
+          // 尝试首选配置
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: 320, height: 240, facingMode: "user" }
+          });
+      } catch (e) {
+          console.warn("首选摄像头配置失败，尝试基础配置...", e);
+          // 降级尝试：不限制分辨率和朝向
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      }
       
       videoStreamRef.current = stream;
       

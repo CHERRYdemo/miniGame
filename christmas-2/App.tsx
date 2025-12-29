@@ -92,12 +92,12 @@ export default function App() {
   const [handPosition, setHandPosition] = useState<{ x: number; y: number; detected: boolean }>({ x: 0.5, y: 0.5, detected: false });
   const [isGestureReady, setIsGestureReady] = useState(false); // 新增：手势准备状态
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([
-    './photos/f65067a321a6178a51c9b37a4888154f.JPG',
-    './photos/IMG_6275.JPG',
-    './photos/IMG_6276.JPG',
-    './photos/IMG_6290.JPG',
-    './photos/IMG_6291.JPG',
-    './photos/IMG_6294.JPG'
+    'photos/f65067a321a6178a51c9b37a4888154f.JPG',
+    'photos/IMG_6275.JPG',
+    'photos/IMG_6276.JPG',
+    'photos/IMG_6290.JPG',
+    'photos/IMG_6291.JPG',
+    'photos/IMG_6294.JPG'
   ]);
   const [isLoadingShare, setIsLoadingShare] = useState(false);
   const [isSharedView, setIsSharedView] = useState(false);

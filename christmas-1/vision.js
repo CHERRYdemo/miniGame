@@ -268,17 +268,32 @@ async function startCamera(deviceId) {
     }
     
     try {
-        const constraints = {
-            video: {
-                deviceId: deviceId ? { exact: deviceId } : undefined,
-                facingMode: deviceId ? undefined : 'user', 
-                // width: { ideal: 480 }, 
-                // height: { ideal: 640 },
-                zoom: true // 请求变焦能力
+        let stream;
+        try {
+            // 1. 尝试首选配置
+            const constraints = {
+                video: {
+                    deviceId: deviceId ? { exact: deviceId } : undefined,
+                    facingMode: deviceId ? undefined : 'user', 
+                    zoom: true // 请求变焦能力
+                }
+            };
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (err) {
+            console.warn("首选摄像头配置失败，尝试基础配置...", err);
+            // 2. 降级尝试：最基础配置
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            } catch (err2) {
+                 console.warn("基础配置失败，尝试指定分辨率...", err2);
+                 // 3. 再次降级：指定通用分辨率（有时能解决驱动兼容性问题）
+                 stream = await navigator.mediaDevices.getUserMedia({ 
+                     video: { width: 640, height: 480 } 
+                 });
             }
-        };
+        }
         
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoStream = stream;
         videoElement.srcObject = videoStream;
         
         // 获取变焦能力
