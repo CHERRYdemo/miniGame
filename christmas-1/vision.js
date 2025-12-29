@@ -13,13 +13,18 @@ let zoomCapabilities = null; // 存储摄像头变焦能力
 
 // --- 模型初始化 ---
 
-async function initFaceAndBody() {
+async function initFaceAndBody(onProgress) {
     console.log("Checking MediaPipe globals...");
     if (!window.FaceMesh || !window.SelfieSegmentation || !window.Hands) {
         throw new Error("MediaPipe libraries not loaded. Please check network connection.");
     }
     
-    if (faceMesh && selfieSegmentation && hands) return;
+    if (faceMesh && selfieSegmentation && hands) {
+        if(onProgress) onProgress(0.9);
+        return;
+    }
+
+    if(onProgress) onProgress(0.1);
 
     // FaceMesh
     faceMesh = new window.FaceMesh({locateFile: (file) => `https://unpkg.com/@mediapipe/face_mesh/${file}`});
@@ -30,6 +35,8 @@ async function initFaceAndBody() {
         minTrackingConfidence: 0.5
     });
     faceMesh.onResults(onFaceResults);
+    
+    if(onProgress) onProgress(0.4);
 
     // SelfieSegmentation
     selfieSegmentation = new window.SelfieSegmentation({locateFile: (file) => `https://unpkg.com/@mediapipe/selfie_segmentation/${file}`});
@@ -37,6 +44,8 @@ async function initFaceAndBody() {
         modelSelection: 1, // 1: Landscape (lighter but good), 0: General
     });
     selfieSegmentation.onResults(onSegmentationResults);
+    
+    if(onProgress) onProgress(0.7);
     
     // Hands
     hands = new window.Hands({locateFile: (file) => `https://unpkg.com/@mediapipe/hands/${file}`});
@@ -47,6 +56,8 @@ async function initFaceAndBody() {
         minTrackingConfidence: 0.5
     });
     hands.onResults(onHandsResults);
+    
+    if(onProgress) onProgress(0.9);
 }
 
 // --- 结果处理回调 ---
@@ -355,16 +366,21 @@ async function processVideoLoop() {
 
 // --- 初始化入口 ---
 
-export async function initVision() {
+export async function initVision(onProgress) {
     console.log("initVision started");
     try {
+        if(onProgress) onProgress(0.05);
         console.log("Initializing Face and Body...");
-        await initFaceAndBody();
+        await initFaceAndBody(onProgress);
+        
         console.log("Getting Camera Devices...");
         await getCameraDevices();
+        
+        if(onProgress) onProgress(0.95);
         console.log("Starting Camera...");
         await startCamera(); // 默认启动前置
         
+        if(onProgress) onProgress(1.0);
         console.log("Vision Init Complete");
         // document.getElementById('loading').style.display = 'none'; // 移交控制权给 main.js
 

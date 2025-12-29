@@ -137,24 +137,33 @@ if (canvas) {
 }
 
 // 简单的图片预加载函数
-function preloadImages() {
+function preloadImages(onProgress) {
     const images = [
         'resource/spoon.png', 
         'resource/tangyuan.png',
         'resource/underwater_bg.png'
     ];
+    let loadedCount = 0;
     
     return Promise.all(images.map(src => {
         return new Promise((resolve) => {
             const img = new Image();
-            img.onload = () => resolve(src);
-            img.onerror = () => {
-                console.warn(`Failed to preload ${src}`);
-                resolve(src); // 即使失败也继续，不阻塞整个流程
+            img.onload = img.onerror = () => {
+                loadedCount++;
+                if (onProgress) onProgress(loadedCount / images.length);
+                resolve(src);
             };
             img.src = src;
         });
     }));
+}
+
+// 进度条更新函数
+function updateLoadingUI(percent) {
+    const bar = document.getElementById('loading-bar');
+    const text = document.getElementById('loading-percent');
+    if (bar) bar.style.width = `${percent}%`;
+    if (text) text.innerText = `${Math.floor(percent)}%`;
 }
 
 // --- 启动程序 ---
@@ -163,14 +172,31 @@ async function startApp() {
     try {
         const loadingText = document.querySelector('#loading p');
         
+        // 进度状态
+        let imgProgress = 0;
+        let visionProgress = 0;
+        
+        const updateCombinedProgress = () => {
+            // 权重: 图片 20%, 模型 80% (模型初始化更慢)
+            const total = (imgProgress * 0.2) + (visionProgress * 0.8);
+            updateLoadingUI(total * 100);
+        };
+
         // 1. 启动资源预加载
         console.log("Starting resource preload...");
-        const resourcePromise = preloadImages();
+        const resourcePromise = preloadImages((p) => {
+            imgProgress = p;
+            updateCombinedProgress();
+        });
         
         // 2. 启动 Vision
         console.log("Starting vision init...");
-        if(loadingText) loadingText.innerText = "正在初始化视觉模型和加载资源...";
-        const visionPromise = initVision();
+        if(loadingText) loadingText.innerText = "正在初始化视觉模型...";
+        
+        const visionPromise = initVision((p) => {
+            visionProgress = p;
+            updateCombinedProgress();
+        });
 
         // 3. 等待所有任务完成
         await Promise.all([visionPromise, resourcePromise]);

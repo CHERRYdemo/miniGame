@@ -22,6 +22,13 @@ function LoadingScreen({ isGestureReady }: { isGestureReady: boolean }) {
   const is3DLoaded = !active && progress === 100;
   const isReady = is3DLoaded && isGestureReady && minTimePassed;
   
+  // 计算展示进度：3D加载占90%，手势初始化占10%
+  const displayProgress = isReady 
+    ? 100 
+    : is3DLoaded 
+      ? 90 + (isGestureReady ? 5 : 0) + (minTimePassed ? 5 : 0) // 90-99% 区间
+      : Math.min(90, progress); // 0-90% 区间
+
   const [visible, setVisible] = useState(true);
   
   useEffect(() => {
@@ -36,14 +43,22 @@ function LoadingScreen({ isGestureReady }: { isGestureReady: boolean }) {
   return (
     <div className={`absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black text-[#D4AF37] font-serif transition-opacity duration-800 ${isReady ? 'opacity-0' : 'opacity-100'}`}>
       <div className="mb-6 text-2xl animate-pulse">Merry Christmas</div>
-      <div className="w-[300px] h-[2px] bg-[#333] mb-4 rounded-full overflow-hidden">
+      
+      {/* Progress Bar Container */}
+      <div className="w-[300px] h-[4px] bg-[#333] mb-2 rounded-full overflow-hidden">
         <div 
           className="h-full bg-[#D4AF37] transition-all duration-300 ease-out shadow-[0_0_10px_#D4AF37]" 
-          style={{ width: `${Math.max(5, is3DLoaded ? (isGestureReady ? 100 : 90) : progress)}%` }}
+          style={{ width: `${displayProgress}%` }}
         />
       </div>
+      
+      {/* Percentage Text */}
+      <div className="text-sm font-mono mb-4 text-[#D4AF37]/80">
+        {Math.floor(displayProgress)}%
+      </div>
+
       <div className="text-xs tracking-[0.2em] uppercase opacity-80">
-        {active ? "Loading Magic World..." : (isGestureReady ? "Enter" : "Initializing Vision...")}
+        {active ? "Loading Magic World..." : (!isGestureReady ? "Initializing Vision..." : "Ready")}
       </div>
     </div>
   );
