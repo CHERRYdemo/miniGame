@@ -11,12 +11,8 @@
 <body>
     <p>正在进入魔法世界...</p>
     <script>
-        // 强制跳转到 christmas-1，避免缓存问题
+        // 跳转到 christmas-1
         var targetUrl = "./christmas-1/index.html";
-        // 添加时间戳防止缓存
-        if (targetUrl.indexOf('?') === -1) {
-            targetUrl += '?t=' + Date.now();
-        }
         // 使用 replace 而不是 href，避免浏览器历史记录
         window.location.replace(targetUrl);
     </script>
