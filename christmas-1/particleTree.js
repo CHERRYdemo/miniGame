@@ -185,7 +185,9 @@ function onClick(event) {
 
     // 圣诞树逻辑：点击页面任意位置跳转到 christmas-2
     console.log("Christmas Tree Page Clicked! Redirecting to Luxury Tree...");
-    window.location.href = '../christmas-2/dist/index.html';
+    // 适配 GitHub Pages 部署路径（去除了 dist 目录）
+    // 如果是本地开发环境，可能需要手动调整或启动对应的服务
+    window.location.href = '../christmas-2/index.html';
 }
 
 function transitionToLuxuryTree() {
