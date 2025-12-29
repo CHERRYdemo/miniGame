@@ -20,29 +20,6 @@ let animationId;
 let controls;
 let raycaster;
 let mouse;
-let loadedTextures = {}; // 用于存储预加载的纹理
-
-// 预加载资源函数
-export function preloadParticleResources() {
-    return new Promise((resolve, reject) => {
-        const manager = new THREE.LoadingManager();
-        const textureLoader = new THREE.TextureLoader(manager);
-
-        manager.onLoad = () => {
-            console.log('Particle resources loaded');
-            resolve(loadedTextures);
-        };
-
-        manager.onError = (url) => {
-            console.error('There was an error loading ' + url);
-            reject(new Error('Failed to load ' + url));
-        };
-
-        // 预加载 spoon 和 tangyuan
-        loadedTextures.spoon = textureLoader.load('resource/spoon.png');
-        loadedTextures.tangyuan = textureLoader.load('resource/tangyuan.png');
-    });
-}
 
 // 顶点着色器: 处理位置抖动和呼吸动画
 const vertexShader = `
@@ -606,17 +583,12 @@ function createStar() {
 
     // Spoon Mode: Use Sprite with Image
     if (state.treeType === 'spoon') {
-        // 使用预加载的纹理
-        if (!loadedTextures.spoon || !loadedTextures.tangyuan) {
-            console.warn("Textures not preloaded, falling back to runtime loading");
-            const textureLoader = new THREE.TextureLoader();
-            loadedTextures.spoon = textureLoader.load('resource/spoon.png');
-            loadedTextures.tangyuan = textureLoader.load('resource/tangyuan.png');
-        }
-
+        const textureLoader = new THREE.TextureLoader();
+        
         // Spoon
+        const spoonMap = textureLoader.load('resource/spoon.png');
         const material = new THREE.SpriteMaterial({ 
-            map: loadedTextures.spoon,
+            map: spoonMap,
             color: 0x777777, 
             transparent: true,
             fog: false // 关闭雾效，避免看起来透明
@@ -629,8 +601,9 @@ function createStar() {
         scene.add(starMesh);
 
         // Tangyuan (独立对象，固定位置)
+        const tangyuanMap = textureLoader.load('resource/tangyuan.png');
         const tangyuanMaterial = new THREE.SpriteMaterial({
-            map: loadedTextures.tangyuan,
+            map: tangyuanMap,
             color: 0x777777, 
             transparent: true,
             fog: false // 关闭雾效，避免看起来透明

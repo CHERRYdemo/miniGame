@@ -10,9 +10,17 @@ import { TreeMode } from './types';
 // Custom Loading Screen that combines 3D loading and Gesture initialization
 function LoadingScreen({ isGestureReady }: { isGestureReady: boolean }) {
   const { progress, active } = useProgress();
-  // Wait until 3D is loaded AND gesture is ready
+  
+  // 最小加载时间控制
+  const [minTimePassed, setMinTimePassed] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setMinTimePassed(true), 2000); // 至少显示2秒
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Wait until 3D is loaded AND gesture is ready AND min time passed
   const is3DLoaded = !active && progress === 100;
-  const isReady = is3DLoaded && isGestureReady;
+  const isReady = is3DLoaded && isGestureReady && minTimePassed;
   
   const [visible, setVisible] = useState(true);
   

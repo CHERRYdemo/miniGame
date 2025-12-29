@@ -1,6 +1,5 @@
 import { initVision, setZoomLevel } from './vision.js';
 import { state } from './state.js';
-import { preloadParticleResources } from './particleTree.js';
 // import { initLuxuryTree } from './luxuryTree.js'; // 暂时不需要直接导入，由 particleTree 动态调用或全局调用
 
 // 调试信息：确认页面加载
@@ -137,6 +136,27 @@ if (canvas) {
     });
 }
 
+// 简单的图片预加载函数
+function preloadImages() {
+    const images = [
+        'resource/spoon.png', 
+        'resource/tangyuan.png',
+        'resource/underwater_bg.png'
+    ];
+    
+    return Promise.all(images.map(src => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(src);
+            img.onerror = () => {
+                console.warn(`Failed to preload ${src}`);
+                resolve(src); // 即使失败也继续，不阻塞整个流程
+            };
+            img.src = src;
+        });
+    }));
+}
+
 // --- 启动程序 ---
 
 async function startApp() {
@@ -145,7 +165,7 @@ async function startApp() {
         
         // 1. 启动资源预加载
         console.log("Starting resource preload...");
-        const resourcePromise = preloadParticleResources();
+        const resourcePromise = preloadImages();
         
         // 2. 启动 Vision
         console.log("Starting vision init...");
@@ -167,6 +187,21 @@ async function startApp() {
                 loadingScreen.style.transition = 'opacity 0.5s';
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
+                    
+                    // 5. 延迟预加载 Christmas-2，实现无缝跳转体验
+                    console.log("Scheduling Christmas-2 preload...");
+                    setTimeout(() => {
+                        console.log("Preloading Christmas-2 resources...");
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.style.width = '0';
+                        iframe.style.height = '0';
+                        iframe.style.border = '0';
+                        // 使用正确的相对路径
+                        iframe.src = '../christmas-2/index.html';
+                        document.body.appendChild(iframe);
+                    }, 3000); // 3秒后开始预加载，避免影响当前页面性能
+
                 }, 500);
             }
         }, 800);
